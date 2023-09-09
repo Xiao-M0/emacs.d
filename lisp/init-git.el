@@ -1,10 +1,4 @@
 (provide 'init-git)
-(use-package vc
-  :elpaca nil
-  :defer t
-  :config
-  (setq vc-follow-symlinks t))
-
 (use-package magit
   :elpaca (:files (:defaults "lisp/*.el" :exclude "lisp/magit-libgit.el" "lisp/magit-libgit-pkg"))
   :defer t
@@ -47,34 +41,12 @@
     "gS"  'magit-stage-file
     "gU"  'magit-unstage-file))
 
-(use-package forge
-  :elpaca t
-  :defer t
-  :after magit
-  :init
-  (setq forge-add-default-bindings nil
-        forge-database-connector 'sqlite-builtin))
-
-(use-package transient
-  :elpaca t
-  :defer t
-  :after vc magit
-  :config
-  (general-def transient-base-map   "q" 'transient-quit-one)
-  (general-def transient-sticky-map "q" 'transient-quit-seq))
-
-(use-package browse-at-remote
-  :elpaca t
-  :after vc magit
-  :general
-  (tyrant-def "go" 'browse-at-remote))
-
 (use-package diff-hl
   :elpaca t
   :after vc magit
   :hook (after-init . global-diff-hl-mode)
   :config
-  (setq diff-hl-side 'right)
+  (setq diff-hl-side 'left)
 
   (with-eval-after-load 'magit
     (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
@@ -83,55 +55,3 @@
   (general-def 'normal
     "[ h" '(diff-hl-previous-hunk :jump t)
     "] h" '(diff-hl-next-hunk :jump t)))
-
-(use-package git-modes
-  :elpaca t
-  :after vc magit
-  :defer t)
-
-;; (use-package git-timemachine
-;;   :elpaca t
-;;   :config
-;;   (general-def git-timemachine-mode-map
-;;     "gt" '(:ignore t :which-key "git-timemachine"))
-;;   :general
-;;   (tyrant-def "gt" 'git-timemachine))
-
-(use-package git-link
-  :elpaca t
-  :after vc magit
-  :config
-  (setq git-link-open-in-browser t)
-
-  (defun git-link-copy-url-only ()
-    "Only copy the generated link to the kill ring."
-    (interactive)
-    (let (git-link-open-in-browser)
-      (call-interactively 'git-link)))
-
-  (defun git-link-commit-copy-url-only ()
-    "Only copy the generated link to the kill ring."
-    (interactive)
-    (let (git-link-open-in-browser)
-      (call-interactively 'git-link-commit)))
-  :general
-  (tyrant-def
-    "gL"  (cons "links" (make-sparse-keymap))
-    "gLc" 'git-link-commit
-    "gLC" 'git-link-commit-copy-url-only
-    "gLl" 'git-link
-    "gLL" 'git-link-copy-url-only
-    "gLh" 'git-link-homepage))
-
-(use-package gitignore-templates
-  :elpaca t
-  :after vc magit
-  :config
-  (setq gitignore-templates-api 'github)
-  :general
-  (tyrant-def
-    "gI"  (cons "gitignore" (make-sparse-keymap))
-    "gIn" 'gitignore-templates-new-file
-    "gIi" 'gitignore-templates-insert))
-
-

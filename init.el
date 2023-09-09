@@ -63,5 +63,4 @@
 (require 'init-plugin)
 (require 'init-org)
 (require 'init-ui)
-(elpaca-wait)
 (require 'init-git)
